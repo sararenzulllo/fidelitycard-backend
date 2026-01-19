@@ -17,6 +17,10 @@ const app = express();
 
 app.use(cors());
 app.use(express.json()); 
+app.get("/", (req, res) => {
+  res.send("Backend online 🚀");
+});
+
 app.use("/api/products", productsRouter);
 app.use("/api/support", supportRoutes);
 app.use("/api/recommendations", recommendRoutes);
