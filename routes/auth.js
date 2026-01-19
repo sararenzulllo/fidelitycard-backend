@@ -5,11 +5,10 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
-
+// REGISTER
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
-
     if (!name || !email || !password) {
       return res.status(400).json({ message: "Campi mancanti" });
     }
@@ -32,28 +31,23 @@ router.post("/register", async (req, res) => {
     });
 
     await user.save();
-
-    res.status(201).json({ message: "Registrazione riuscita" });
+    res.status(201).json({ message: "Registrazione riuscita", user });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Errore registrazione" });
   }
 });
 
-
+// LOGIN
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ message: "Credenziali errate" });
-    }
+    if (!user) return res.status(400).json({ message: "Credenziali errate" });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Credenziali errate" });
-    }
+    if (!isMatch) return res.status(400).json({ message: "Credenziali errate" });
 
     const token = jwt.sign(
       { id: user._id, email: user.email },
@@ -63,13 +57,13 @@ router.post("/login", async (req, res) => {
 
     res.json({
       message: "Login riuscito",
+      token,
       user: {
         id: user._id,
         name: user.name,
         email: user.email,
         points: user.points,
       },
-      token,
     });
   } catch (error) {
     console.error(error);
@@ -77,8 +71,9 @@ router.post("/login", async (req, res) => {
   }
 });
 
-
+// LOGOUT
 router.post("/logout", (req, res) => {
+  // Con JWT in localStorage non serve fare nulla sul server
   res.json({ message: "Logout effettuato" });
 });
 
