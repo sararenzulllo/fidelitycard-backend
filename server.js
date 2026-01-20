@@ -20,16 +20,19 @@ import User from "./app/models/User.js";
 dotenv.config();
 
 const app = express();
-
 app.use(cors({
   origin: [
     "http://localhost:5173",
     "https://fidelitycard.vercel.app",
     "https://fidelitycard-fq48d3j25-saras-projects-03944b8e.vercel.app"
   ],
-  credentials: true
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // aggiungi OPTIONS
+  allowedHeaders: ["Content-Type", "Authorization"]     // aggiungi Authorization
 }));
 
+// Supporta richieste preflight
+app.options("*", cors());
 
 app.use(express.json()); // parsing JSON
 
