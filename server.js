@@ -1,7 +1,10 @@
+// server.js
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+
+// Import rotte
 import productsRouter from "./routes/products.js"; 
 import supportRoutes from "./routes/supportRoutes.js";
 import recommendRoutes from "./routes/recommendRoutes.js";
@@ -11,30 +14,42 @@ import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
 import reviewsRoutes from "./routes/reviews.js";
 
+// Modello User per le rotte custom
+import User from "./app/models/User.js";
+
 dotenv.config();
 
 const app = express();
+
 app.use(cors({
-  origin: ["http://localhost:5173", "https://fidelitycard.vercel.app"],
+  origin: [
+    "http://localhost:5173",
+    "https://fidelitycard.vercel.app",
+    "https://fidelitycard-fq48d3j25-saras-projects-03944b8e.vercel.app"
+  ],
   credentials: true
 }));
 
 
-app.use(express.json()); 
+app.use(express.json()); // parsing JSON
+
+// ✅ Rotta base per test backend
 app.get("/", (req, res) => {
   res.send("Backend online 🚀");
 });
 
+// ✅ Rotte API
 app.use("/api/products", productsRouter);
 app.use("/api/support", supportRoutes);
 app.use("/api/recommendations", recommendRoutes);
 app.use("/api/orders", ordersRouter);
 app.use("/api/prizes", prizesRouter);
-app.use("/uploads", express.static("uploads"));
-app.use("/api/auth", authRoutes);  
-app.use("/api/users", userRoutes);  
+app.use("/uploads", express.static("uploads")); // static files
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/reviews", reviewsRoutes);
 
+// ✅ Connessione MongoDB
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -42,6 +57,7 @@ mongoose.connect(process.env.MONGO_URI, {
 .then(() => console.log("MongoDB connesso"))
 .catch((err) => console.error("Errore connessione MongoDB:", err));
 
+// ✅ Rotte custom esempio: aggiunta punti
 app.put("/api/users/:id/add-points", async (req, res) => {
   const { id } = req.params;
   const { points } = req.body;
@@ -60,6 +76,7 @@ app.put("/api/users/:id/add-points", async (req, res) => {
   }
 });
 
+// ✅ Rotta custom esempio: bonus QR
 app.put("/api/users/:id/qr-bonus", async (req, res) => {
   const { id } = req.params;
   const bonusPoints = 50; 
@@ -80,5 +97,6 @@ app.put("/api/users/:id/qr-bonus", async (req, res) => {
   }
 });
 
+// ✅ Avvio server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server avviato su porta ${PORT}`));
