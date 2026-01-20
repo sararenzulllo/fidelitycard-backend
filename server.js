@@ -14,8 +14,12 @@ import reviewsRoutes from "./routes/reviews.js";
 dotenv.config();
 
 const app = express();
+app.use(cors({
+  origin: ["http://localhost:5173", "https://fidelitycard.vercel.app"],
+  credentials: true
+}));
 
-app.use(cors());
+
 app.use(express.json()); 
 app.get("/", (req, res) => {
   res.send("Backend online 🚀");
