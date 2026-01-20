@@ -15,7 +15,7 @@ import userRoutes from "./routes/users.js";
 import reviewsRoutes from "./routes/reviews.js";
 
 // Modello User per le rotte custom
-import User from "./app/models/User.js";
+import User from "./models/User.js";
 
 dotenv.config();
 
